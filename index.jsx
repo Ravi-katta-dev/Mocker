@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Clock, Play, CheckCircle, XCircle, FileText, Upload, 
-  ChevronRight, ChevronLeft, Flag, List, RefreshCw, BarChart 
+  ChevronRight, ChevronLeft, Flag, List, RefreshCw, BarChart,
+  Moon, Sun
 } from 'lucide-react';
 
 // --- PRE-LOADED SAMPLE DATA (Extracted from your snippets) ---
@@ -56,6 +57,9 @@ export default function App() {
   const [errorMsg, setErrorMsg] = useState("");
   const [showSubmitModal, setShowSubmitModal] = useState(false);
 
+  // Dark Mode State
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+
   // Timer Effect
   useEffect(() => {
     let timer;
@@ -73,6 +77,16 @@ export default function App() {
     }
     return () => clearInterval(timer);
   }, [appState]);
+
+  // Dark Mode Effect
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);
 
   // CSV Parser
   const parseCSVTest = (csvText, filename) => {
@@ -199,26 +213,33 @@ export default function App() {
 
   const renderDashboard = () => (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 animate-fade-in">
-      <div className="text-center mb-8 sm:mb-10 mt-4">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-2 tracking-tight">RRB Computer Science</h1>
-        <p className="text-base sm:text-lg text-slate-600">Mock Test Simulator for Technician Grade-1 / Group-D / JE CBT-1</p>
+      <div className="text-center mb-8 sm:mb-10 mt-4 relative">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          aria-label="Toggle dark mode"
+          className="absolute right-0 top-0 p-2 rounded-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors"
+        >
+          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900 dark:text-blue-300 mb-2 tracking-tight">RRB Computer Science</h1>
+        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">Mock Test Simulator for Technician Grade-1 / Group-D / JE CBT-1</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
         {/* Preloaded Tests Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-4 flex items-center">
-            <FileText className="mr-2 text-blue-600" />
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center">
+            <FileText className="mr-2 text-blue-600 dark:text-blue-400" />
             Sample Tests
           </h2>
-          <p className="text-sm text-slate-500 mb-6">These tests contain a sample of extracted questions to try the platform instantly.</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">These tests contain a sample of extracted questions to try the platform instantly.</p>
           
           <div className="space-y-4">
             {Object.keys(SAMPLE_TESTS).map(key => (
-              <div key={key} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 transition-colors gap-3">
+              <div key={key} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-200 dark:hover:border-blue-700 transition-colors gap-3">
                 <div>
-                  <h3 className="font-semibold text-slate-800 text-sm sm:text-base">{SAMPLE_TESTS[key].title}</h3>
-                  <div className="flex space-x-4 text-xs text-slate-500 mt-1.5">
+                  <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm sm:text-base">{SAMPLE_TESTS[key].title}</h3>
+                  <div className="flex space-x-4 text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                     <span className="flex items-center"><List size={14} className="mr-1"/> {SAMPLE_TESTS[key].questions.length} Qs</span>
                     <span className="flex items-center"><Clock size={14} className="mr-1"/> 20 Mins</span>
                   </div>
@@ -235,19 +256,19 @@ export default function App() {
         </div>
 
         {/* Upload Section */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-sm border border-blue-100 p-5 sm:p-6 flex flex-col justify-center items-center text-center">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-inner">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl shadow-sm border border-blue-100 dark:border-blue-900/50 p-5 sm:p-6 flex flex-col justify-center items-center text-center">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mb-5 sm:mb-6 shadow-inner">
             <Upload size={28} className="sm:w-8 sm:h-8" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 mb-2">Take the Full Exam</h2>
-          <p className="text-slate-600 mb-6 max-w-sm text-sm sm:text-base">
-            Upload your full <strong className="text-slate-800">Set 1.csv</strong> to <strong className="text-slate-800">Set 5.csv</strong> files.
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">Take the Full Exam</h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-sm text-sm sm:text-base">
+            Upload your full <strong className="text-slate-800 dark:text-slate-200">Set 1.csv</strong> to <strong className="text-slate-800 dark:text-slate-200">Set 5.csv</strong> files.
           </p>
           
           {/* Timer Setting Input */}
-          <div className="flex items-center space-x-3 mb-6 bg-white px-4 py-2.5 rounded-xl border border-blue-100 shadow-sm w-full max-w-[260px] justify-center">
-            <Clock size={18} className="text-blue-500 shrink-0" />
-            <label className="text-slate-700 font-medium text-sm">Test Duration:</label>
+          <div className="flex items-center space-x-3 mb-6 bg-white dark:bg-slate-800 px-4 py-2.5 rounded-xl border border-blue-100 dark:border-slate-600 shadow-sm w-full max-w-[260px] justify-center">
+            <Clock size={18} className="text-blue-500 dark:text-blue-400 shrink-0" />
+            <label className="text-slate-700 dark:text-slate-300 font-medium text-sm">Test Duration:</label>
             <div className="flex items-center">
               <input 
                 type="number" 
@@ -255,9 +276,9 @@ export default function App() {
                 max="180" 
                 value={customDuration} 
                 onChange={(e) => setCustomDuration(Number(e.target.value))} 
-                className="w-14 px-1 py-1 text-center font-bold text-blue-700 bg-blue-50 border border-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-14 px-1 py-1 text-center font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-slate-700 border border-blue-200 dark:border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              <span className="text-slate-500 text-sm ml-1.5">mins</span>
+              <span className="text-slate-500 dark:text-slate-400 text-sm ml-1.5">mins</span>
             </div>
           </div>
           
@@ -278,28 +299,52 @@ export default function App() {
 
   const renderTestRunning = () => {
     const currentQ = questions[currentIndex];
+    const timeProgress = duration > 0 ? (timeLeft / duration) * 100 : 0;
     
     return (
-      <div className="flex flex-col h-[100dvh] bg-slate-50 overflow-hidden">
+      <div className="flex flex-col h-[100dvh] bg-slate-50 dark:bg-slate-900 overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b border-slate-200 px-3 sm:px-4 py-3 flex justify-between items-center shrink-0 shadow-sm z-10">
-          <div className="flex items-center overflow-hidden mr-2">
-            <button className="md:hidden mr-2 p-1.5 text-slate-500 hover:bg-slate-100 rounded-md" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-              <List size={22} />
-            </button>
-            <h1 className="font-bold text-slate-800 text-sm sm:text-lg truncate">{activeTestTitle}</h1>
-          </div>
-          <div className="flex items-center space-x-2 sm:space-x-4 shrink-0">
-            <div className={`flex items-center font-mono text-sm sm:text-lg font-bold px-2.5 sm:px-3 py-1.5 rounded-md ${timeLeft < 300 ? 'bg-red-100 text-red-700' : 'bg-slate-100 text-slate-800'}`}>
-              <Clock size={16} className="mr-1.5 sm:mr-2" />
-              {formatTime(timeLeft)}
+        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-3 sm:px-4 py-3 flex flex-col shrink-0 shadow-sm z-10">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center overflow-hidden mr-2">
+              <button className="md:hidden mr-2 p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                <List size={22} />
+              </button>
+              <h1 className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-lg truncate">{activeTestTitle}</h1>
             </div>
-            <button 
-              onClick={() => setShowSubmitModal(true)}
-              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm"
-            >
-              Submit
-            </button>
+            <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+              <div className={`flex items-center font-mono text-sm sm:text-lg font-bold px-2.5 sm:px-3 py-1.5 rounded-md ${timeLeft < 300 ? 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100'}`}>
+                <Clock size={16} className="mr-1.5 sm:mr-2" />
+                {formatTime(timeLeft)}
+              </div>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                aria-label="Toggle dark mode"
+                className="p-1.5 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors"
+              >
+                {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+              </button>
+              <button 
+                onClick={() => setShowSubmitModal(true)}
+                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+          {/* Time Progress Bar */}
+          <div
+            role="progressbar"
+            aria-label="Time remaining"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(timeProgress)}
+            className="mt-2 h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden"
+          >
+            <div
+              className={`h-full rounded-full transition-all duration-1000 ${timeLeft < 300 ? 'bg-red-500' : 'bg-blue-500'}`}
+              style={{ width: `${timeProgress}%` }}
+            />
           </div>
         </header>
 
@@ -309,16 +354,16 @@ export default function App() {
             <div className="flex-1 p-4 sm:p-6 md:p-8 max-w-4xl mx-auto w-full pb-28 sm:pb-8">
               
               <div className="flex flex-wrap justify-between items-center gap-2 mb-4 sm:mb-6">
-                <span className="text-xs sm:text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                <span className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full border border-blue-100 dark:border-blue-800">
                   Q {currentIndex + 1} of {questions.length}
                 </span>
-                <span className="text-xs sm:text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full truncate max-w-[200px] sm:max-w-none">
+                <span className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full truncate max-w-[200px] sm:max-w-none">
                   {currentQ.topic}
                 </span>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8 mb-6">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-slate-800 mb-6 sm:mb-8 leading-relaxed">
+              <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 sm:p-6 md:p-8 mb-6">
+                <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-slate-800 dark:text-slate-100 mb-6 sm:mb-8 leading-relaxed">
                   {currentQ.question}
                 </h2>
                 
@@ -329,19 +374,19 @@ export default function App() {
                       onClick={() => handleOptionSelect(opt)}
                       className={`flex items-start p-3 sm:p-4 border rounded-xl cursor-pointer transition-all ${
                         answers[currentIndex] === opt 
-                          ? 'bg-blue-50 border-blue-400 ring-1 ring-blue-400' 
-                          : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                          ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-400 dark:border-blue-500 ring-1 ring-blue-400 dark:ring-blue-500' 
+                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
                       }`}
                     >
                       <div className="flex items-center h-6 mr-3 sm:mr-4 shrink-0">
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                          answers[currentIndex] === opt ? 'border-blue-600 bg-blue-600' : 'border-slate-400'
+                          answers[currentIndex] === opt ? 'border-blue-600 dark:border-blue-400 bg-blue-600 dark:bg-blue-500' : 'border-slate-400 dark:border-slate-500'
                         }`}>
                           {answers[currentIndex] === opt && <div className="w-2 h-2 rounded-full bg-white" />}
                         </div>
                       </div>
-                      <span className="text-slate-700 text-sm sm:text-base flex-1 pt-0.5 select-none">
-                        <strong className="mr-1.5 sm:mr-2 text-slate-500">{opt}.</strong> {currentQ.options[opt]}
+                      <span className="text-slate-700 dark:text-slate-300 text-sm sm:text-base flex-1 pt-0.5 select-none">
+                        <strong className="mr-1.5 sm:mr-2 text-slate-500 dark:text-slate-400">{opt}.</strong> {currentQ.options[opt]}
                       </span>
                     </div>
                   ))}
@@ -351,7 +396,7 @@ export default function App() {
             </div>
 
     {/* Bottom Navigation Bar (Mobile Adaptive) */}
-            <div className="bg-white border-t border-slate-200 p-3 sm:p-4 shrink-0 fixed sm:static bottom-0 left-0 right-0 z-10 md:z-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:shadow-none pb-safe">
+            <div className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-3 sm:p-4 shrink-0 fixed sm:static bottom-0 left-0 right-0 z-10 md:z-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] sm:shadow-none pb-safe">
               <div className="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
                 {/* Secondary Actions (Mark/Clear) */}
                 <div className="flex space-x-2 w-full sm:w-auto justify-between sm:justify-start order-2 sm:order-1">
@@ -359,17 +404,17 @@ export default function App() {
                     onClick={toggleMarkForReview}
                     className={`flex-1 sm:flex-none flex items-center justify-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg border transition-colors ${
                       markedForReview[currentIndex] 
-                        ? 'bg-purple-50 text-purple-700 border-purple-200' 
-                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
+                        ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-700' 
+                        : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600'
                     }`}
                   >
-                    <Flag size={14} className={`mr-1.5 sm:mr-2 ${markedForReview[currentIndex] ? 'fill-purple-700' : ''}`} />
+                    <Flag size={14} className={`mr-1.5 sm:mr-2 ${markedForReview[currentIndex] ? 'fill-purple-700 dark:fill-purple-400' : ''}`} />
                     {markedForReview[currentIndex] ? 'Marked' : 'Mark for Review'}
                   </button>
                   <button 
                     onClick={clearResponse}
                     disabled={!answers[currentIndex]}
-                    className="flex-1 sm:flex-none flex items-center justify-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 sm:flex-none flex items-center justify-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <RefreshCw size={14} className="mr-1.5 sm:mr-2" />
                     Clear
@@ -381,7 +426,7 @@ export default function App() {
                   <button 
                     onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
                     disabled={currentIndex === 0}
-                    className="flex-1 sm:flex-none flex items-center justify-center px-4 sm:px-5 py-2.5 bg-slate-100 text-slate-700 text-sm sm:text-base font-medium rounded-lg hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 sm:flex-none flex items-center justify-center px-4 sm:px-5 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm sm:text-base font-medium rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ChevronLeft size={18} className="mr-1" /> Prev
                   </button>
@@ -399,12 +444,12 @@ export default function App() {
 
           {/* Sidebar / Question Palette (Mobile Adaptive Overlay) */}
           <aside className={`
-            absolute md:static top-0 right-0 h-full bg-white border-l border-slate-200 w-72 max-w-[80vw] shadow-2xl md:shadow-none transition-transform duration-300 z-30 flex flex-col
+            absolute md:static top-0 right-0 h-full bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 w-72 max-w-[80vw] shadow-2xl md:shadow-none transition-transform duration-300 z-30 flex flex-col
             ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'}
           `}>
-            <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h3 className="font-bold text-slate-700">Question Palette</h3>
-              <button className="md:hidden text-slate-500 hover:text-slate-800 p-1" onClick={() => setIsSidebarOpen(false)}>
+            <div className="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/50">
+              <h3 className="font-bold text-slate-700 dark:text-slate-200">Question Palette</h3>
+              <button className="md:hidden text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 p-1" onClick={() => setIsSidebarOpen(false)}>
                 <XCircle size={24} />
               </button>
             </div>
@@ -412,11 +457,11 @@ export default function App() {
             <div className="p-4 flex-1 overflow-y-auto pb-20 md:pb-4">
               <div className="grid grid-cols-5 gap-2">
                 {questions.map((q, idx) => {
-                  let btnClass = "border-slate-300 text-slate-600 bg-white"; // default
+                  let btnClass = "border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700"; // default
                   if (answers[idx]) btnClass = "border-emerald-500 bg-emerald-500 text-white"; // answered
-                  if (markedForReview[idx]) btnClass = "border-purple-500 bg-purple-100 text-purple-800"; // marked
+                  if (markedForReview[idx]) btnClass = "border-purple-500 bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300"; // marked
                   if (answers[idx] && markedForReview[idx]) btnClass = "border-purple-600 bg-purple-600 text-white"; // answered & marked
-                  if (idx === currentIndex) btnClass += " ring-2 ring-offset-2 ring-blue-400"; // active
+                  if (idx === currentIndex) btnClass += " ring-2 ring-offset-2 ring-blue-400 dark:ring-offset-slate-800"; // active
 
                   return (
                     <button
@@ -434,10 +479,10 @@ export default function App() {
               </div>
 
               {/* Legend */}
-              <div className="mt-8 space-y-3 text-xs sm:text-sm text-slate-600">
+              <div className="mt-8 space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
                 <div className="flex items-center"><div className="w-4 h-4 rounded bg-emerald-500 mr-3 shrink-0"></div> Answered</div>
-                <div className="flex items-center"><div className="w-4 h-4 rounded border border-slate-300 bg-white mr-3 shrink-0"></div> Not Answered</div>
-                <div className="flex items-center"><div className="w-4 h-4 rounded bg-purple-100 border border-purple-500 mr-3 shrink-0"></div> Marked for Review</div>
+                <div className="flex items-center"><div className="w-4 h-4 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 mr-3 shrink-0"></div> Not Answered</div>
+                <div className="flex items-center"><div className="w-4 h-4 rounded bg-purple-100 dark:bg-purple-900/40 border border-purple-500 mr-3 shrink-0"></div> Marked for Review</div>
                 <div className="flex items-center"><div className="w-4 h-4 rounded bg-purple-600 mr-3 shrink-0"></div> Answered & Marked</div>
               </div>
             </div>
@@ -459,46 +504,55 @@ export default function App() {
     if (!results) return null;
 
     return (
-      <div className="min-h-screen bg-slate-50 py-8 px-4">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
         <div className="max-w-4xl mx-auto space-y-6">
           
           {/* Header Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center relative overflow-hidden">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 text-center relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-2 bg-blue-600"></div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">Test Completed</h1>
-            <p className="text-slate-500 mb-8">{activeTestTitle}</p>
+            <div className="absolute top-4 right-4">
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                aria-label="Toggle dark mode"
+                className="p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors"
+              >
+                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+            </div>
+            <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">Test Completed</h1>
+            <p className="text-slate-500 dark:text-slate-400 mb-8">{activeTestTitle}</p>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <div className="text-3xl font-bold text-blue-600 mb-1">{results.score} <span className="text-lg text-slate-400">/ {results.maxScore}</span></div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Score</div>
+              <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{results.score} <span className="text-lg text-slate-400 dark:text-slate-500">/ {results.maxScore}</span></div>
+                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Score</div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <div className="text-3xl font-bold text-emerald-600 mb-1">{results.percentage}%</div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Accuracy</div>
+              <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{results.percentage}%</div>
+                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Accuracy</div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <div className="text-3xl font-bold text-emerald-500 mb-1">{results.correct}</div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Correct</div>
+              <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <div className="text-3xl font-bold text-emerald-500 dark:text-emerald-400 mb-1">{results.correct}</div>
+                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Correct</div>
               </div>
-              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                <div className="text-3xl font-bold text-rose-500 mb-1">{results.wrong}</div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Incorrect</div>
+              <div className="bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                <div className="text-3xl font-bold text-rose-500 dark:text-rose-400 mb-1">{results.wrong}</div>
+                <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Incorrect</div>
               </div>
             </div>
 
             <button 
               onClick={() => setAppState('DASHBOARD')}
-              className="mt-8 px-6 py-3 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl shadow-sm transition-colors"
+              className="mt-8 px-6 py-3 bg-slate-800 dark:bg-slate-600 hover:bg-slate-900 dark:hover:bg-slate-500 text-white font-semibold rounded-xl shadow-sm transition-colors"
             >
               Return to Dashboard
             </button>
           </div>
 
           {/* Detailed Solutions */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-            <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center">
-              <BarChart className="mr-3 text-blue-600" />
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6 flex items-center">
+              <BarChart className="mr-3 text-blue-600 dark:text-blue-400" />
               Detailed Solutions
             </h2>
             
@@ -509,34 +563,34 @@ export default function App() {
                 const isAttempted = !!userAns;
 
                 return (
-                  <div key={idx} className={`p-5 rounded-xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/30' : (!isAttempted ? 'border-slate-200 bg-slate-50' : 'border-rose-200 bg-rose-50/30')}`}>
+                  <div key={idx} className={`p-5 rounded-xl border ${isCorrect ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-900/10' : (!isAttempted ? 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/30' : 'border-rose-200 dark:border-rose-800 bg-rose-50/30 dark:bg-rose-900/10')}`}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3">
-                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm">
+                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-800 dark:bg-slate-600 text-white flex items-center justify-center font-bold text-sm">
                           {idx + 1}
                         </span>
-                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-2 py-1 bg-white border border-slate-200 rounded-md">
+                        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-2 py-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md">
                           {q.topic} • {q.difficulty}
                         </span>
                       </div>
                       {isCorrect ? (
-                        <span className="flex items-center text-emerald-600 font-semibold text-sm bg-emerald-100 px-3 py-1 rounded-full"><CheckCircle size={16} className="mr-1"/> Correct</span>
+                        <span className="flex items-center text-emerald-600 dark:text-emerald-400 font-semibold text-sm bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 rounded-full"><CheckCircle size={16} className="mr-1"/> Correct</span>
                       ) : (
                         isAttempted ? 
-                        <span className="flex items-center text-rose-600 font-semibold text-sm bg-rose-100 px-3 py-1 rounded-full"><XCircle size={16} className="mr-1"/> Incorrect</span> :
-                        <span className="flex items-center text-slate-500 font-semibold text-sm bg-slate-200 px-3 py-1 rounded-full">Unattempted</span>
+                        <span className="flex items-center text-rose-600 dark:text-rose-400 font-semibold text-sm bg-rose-100 dark:bg-rose-900/30 px-3 py-1 rounded-full"><XCircle size={16} className="mr-1"/> Incorrect</span> :
+                        <span className="flex items-center text-slate-500 dark:text-slate-400 font-semibold text-sm bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded-full">Unattempted</span>
                       )}
                     </div>
                     
-                    <h3 className="text-lg font-medium text-slate-800 mb-4 ml-11">{q.question}</h3>
+                    <h3 className="text-lg font-medium text-slate-800 dark:text-slate-100 mb-4 ml-11">{q.question}</h3>
                     
                     <div className="ml-11 grid md:grid-cols-2 gap-3 mb-4">
                       {['A', 'B', 'C', 'D'].map(opt => {
-                        let optClass = "border-slate-200 bg-white text-slate-600";
+                        let optClass = "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300";
                         if (opt === q.correctOption) {
-                          optClass = "border-emerald-500 bg-emerald-50 text-emerald-800 font-medium ring-1 ring-emerald-500";
+                          optClass = "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300 font-medium ring-1 ring-emerald-500";
                         } else if (opt === userAns && !isCorrect) {
-                          optClass = "border-rose-500 bg-rose-50 text-rose-800 ring-1 ring-rose-500";
+                          optClass = "border-rose-500 bg-rose-50 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300 ring-1 ring-rose-500";
                         }
 
                         return (
@@ -547,8 +601,8 @@ export default function App() {
                       })}
                     </div>
 
-                    <div className="ml-11 p-4 bg-blue-50/50 rounded-lg border border-blue-100 text-sm text-slate-700">
-                      <strong className="text-blue-800 block mb-1">Explanation:</strong>
+                    <div className="ml-11 p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800 text-sm text-slate-700 dark:text-slate-300">
+                      <strong className="text-blue-800 dark:text-blue-400 block mb-1">Explanation:</strong>
                       {q.explanation}
                     </div>
 
@@ -564,7 +618,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen font-sans text-slate-900 bg-slate-100">
+    <div className="min-h-screen font-sans text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-900">
       
       {appState === 'DASHBOARD' && renderDashboard()}
       {appState === 'TEST_RUNNING' && renderTestRunning()}
@@ -573,15 +627,15 @@ export default function App() {
       {/* --- CUSTOM ERROR MODAL --- */}
       {errorMsg && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-fade-in text-center">
-            <div className="w-16 h-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-fade-in text-center">
+            <div className="w-16 h-16 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto mb-4">
               <XCircle size={32} />
             </div>
-            <h3 className="text-xl font-bold text-slate-800 mb-2">Upload Failed</h3>
-            <p className="text-slate-600 mb-6">{errorMsg}</p>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Upload Failed</h3>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">{errorMsg}</p>
             <button 
               onClick={() => setErrorMsg("")} 
-              className="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl transition-colors"
+              className="w-full py-3 bg-slate-800 dark:bg-slate-600 hover:bg-slate-900 dark:hover:bg-slate-500 text-white font-semibold rounded-xl transition-colors"
             >
               Dismiss
             </button>
@@ -592,16 +646,16 @@ export default function App() {
       {/* --- CUSTOM SUBMIT CONFIRMATION MODAL --- */}
       {showSubmitModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-fade-in text-center">
-             <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-fade-in text-center">
+             <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle size={32} />
             </div>
-             <h3 className="text-xl font-bold text-slate-800 mb-2">Submit Exam?</h3>
-             <p className="text-slate-600 mb-6">Are you sure you want to end your test? You cannot change your answers after submitting.</p>
+             <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Submit Exam?</h3>
+             <p className="text-slate-600 dark:text-slate-400 mb-6">Are you sure you want to end your test? You cannot change your answers after submitting.</p>
              <div className="flex space-x-3">
                <button 
                 onClick={() => setShowSubmitModal(false)} 
-                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-xl transition-colors"
+                className="flex-1 py-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-semibold rounded-xl transition-colors"
                >
                  Go Back
                </button>
